@@ -82,5 +82,11 @@ class Server:
 
     # start the server
     def start_server(self):
-        pass
+        listener = listen(4444)
+        server = listener.wait_for_connection()
+        server.sendline(b"Welcome to the RC4 Oracle")
+
+        # clean up
+        server.close()
+        listener.close()
 
