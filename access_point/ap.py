@@ -1,4 +1,4 @@
-import socket
+from pwn import *
 
 
 # RC4 functionality
@@ -82,5 +82,5 @@ class Server:
 
     # start the server
     def start_server(self):
-        s = socket.socket(socket.AF_INET, socket.sock_stream)
+        pass
 
