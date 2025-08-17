@@ -12,7 +12,10 @@ class Client:
 
 # main function
 def main():
-    ap_addr = "" # TODO: CHANGE ME
+    ap_addr = "172.20.0.2" # static IP of the access point
+    port = 4444
+    client = Client(ap_addr, port, b"test") # TODO: change key
+    log.info(client.recvline())
     
 
 

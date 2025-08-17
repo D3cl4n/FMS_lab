@@ -90,3 +90,23 @@ class Server:
         server.close()
         listener.close()
 
+
+# main function
+def main():
+    host = "172.20.0.2"
+    port = 4444
+    key = b"test"
+    # server driver code - starting and listening
+    server = Server(host, port, key)
+    server.start_server()
+
+
+if __name__ == '__main__':
+    main()
+
+
+
+
+
+
+
