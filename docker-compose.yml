@@ -1,0 +1,28 @@
+services:
+  access_point:
+    build: ./access_point
+    container_name: fms_ap
+    networks:
+      - wepnet
+    tty: true
+
+  attacker:
+    build: ./attacker
+    container_name: fms_attacker
+    networks:
+      - wepnet
+    tty: true
+
+  client:
+    build: ./client
+    container_name: fms_client
+    networks:
+      - wepnet
+    depends_on:
+      - access_point
+    tty: true
+
+
+networks:
+  wepnet:
+    driver: bridge
