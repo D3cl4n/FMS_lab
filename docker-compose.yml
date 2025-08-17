@@ -3,21 +3,24 @@ services:
     build: ./access_point
     container_name: fms_ap
     networks:
-      - wepnet
+      wepnet:
+        ipv4_address: 172.20.0.2
     tty: true
 
   attacker:
     build: ./attacker
     container_name: fms_attacker
     networks:
-      - wepnet
+      wepnet:
+        ipv4_address: 172.20.0.3
     tty: true
 
   client:
     build: ./client
     container_name: fms_client
     networks:
-      - wepnet
+      wepnet:
+        ipv4_address: 172.20.0.4
     depends_on:
       - access_point
     tty: true
@@ -26,3 +29,7 @@ services:
 networks:
   wepnet:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/24
+          gateway: 172.20.0.1
