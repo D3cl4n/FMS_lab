@@ -2,6 +2,9 @@ services:
   access_point:
     build: ./access_point
     container_name: fms_ap
+    # TODO: get the networking working and figure out jupyter flow
+    expose:
+      - "4444"
     networks:
       wepnet:
         ipv4_address: 172.20.0.2
