@@ -71,6 +71,8 @@ class Server:
         self.host = host
         self.port = port
         self.key = key
+        self.snap_hdr = b"\xAA"
+
 
     # convert key to ints
     def key_format(self):
@@ -80,12 +82,20 @@ class Server:
 
         return key_temp
 
+
     # start the server
     def start_server(self):
         listener = listen(4444)
         server = listener.wait_for_connection()
         server.sendline(b"Welcome to the RC4 Oracle")
-
+        # handle the user connection
+        while True:
+            # server receives first, then sends message back
+            ct = server.recvline()
+            log.info(f"Received {ct} from client")
+            server.sendline(b"test")
+            break
+    
         # clean up
         server.close()
         listener.close()

@@ -7,16 +7,28 @@ class Client:
         self.host = host
         self.port = port
         self.key = key
-        self.io = remote(host, port)
+        self.snap_hdr = b"\xAA"
+
+
+    # start the client functionality
+    def start_client(self):
+        io = remote(host, port)
+        welcome = io.recvline()
+        log.info(f"Received: {welcome}")
+        io.sendline(b"test1")
+        ct = io.recvline()
+        log.info(f"Received {ct} from server")
+        
 
 
 # main function
 def main():
     ap_addr = "172.20.0.2" # static IP of the access point
     port = 4444
-    client = Client(ap_addr, port, b"test") # TODO: change key
-    log.info(client.recvline())
-    
+    key = b"test"
+    # client driver code - starting and sending data
+    client = Client(host, port, key)
+    client.start_client()
 
 
 if __name__ == '__main__':

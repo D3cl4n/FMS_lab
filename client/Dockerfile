@@ -13,3 +13,6 @@ RUN apt-get update && apt-get install net-tools -y
 
 # copy python script into the container
 COPY client.py /client
+
+# execute the client python script
+CMD ["python", "client.py"]
