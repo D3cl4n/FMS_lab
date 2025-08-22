@@ -8,9 +8,6 @@ WORKDIR /notebook
 COPY requirements.txt /notebook
 RUN pip install -r requirements.txt
 
-# install net-tools so we can check on the network
-RUN apt-get update && apt-get install net-tools -y
-
 # copy the notebook into the container
 COPY fms_notebook.pynb /notebook
 
