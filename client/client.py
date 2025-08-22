@@ -1,3 +1,4 @@
+import time
 from pwn import *
 
 
@@ -12,12 +13,14 @@ class Client:
 
     # start the client functionality
     def start_client(self):
-        io = remote(host, port)
+        io = remote(self.host, self.port)
         welcome = io.recvline()
         log.info(f"Received: {welcome}")
-        io.sendline(b"test1")
-        ct = io.recvline()
-        log.info(f"Received {ct} from server")
+        while True:
+            io.sendline(b"test1")
+            ct = io.recvline()
+            log.info(f"Received {ct} from server")
+            break
         
 
 
@@ -27,9 +30,10 @@ def main():
     port = 4444
     key = b"test"
     # client driver code - starting and sending data
-    client = Client(host, port, key)
+    client = Client(ap_addr, port, key)
     client.start_client()
 
 
 if __name__ == '__main__':
+    time.sleep(5)
     main()
