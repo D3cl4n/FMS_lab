@@ -4,6 +4,10 @@ FROM jupyter/base-notebook
 # set the working directory in the container
 WORKDIR /notebook
 
+# copy requirements.txt and install python modules
+COPY requirements.txt /notebook
+RUN pip install -r requirements.txt
+
 # install net-tools so we can check on the network
 RUN apt-get update && apt-get install net-tools -y
 
