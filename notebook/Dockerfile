@@ -15,4 +15,6 @@ COPY fms_notebook.ipynb /notebook
 EXPOSE 8888
 
 # run Jupyter Notebook
-CMD ["jupyter", "notebook", "--ip=127.0.0.1", "--port=8888"]
+# use 0.0.0.0 to bind to host not just container
+# no browser so jupyter doesn't launch browser in container
+CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--allow-root", "--no-browser"]

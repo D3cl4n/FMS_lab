@@ -2,7 +2,6 @@ services:
   access_point:
     build: ./access_point
     container_name: fms_ap
-    # TODO: get the networking working and figure out jupyter flow
     expose:
       - "4444"
     networks:
@@ -39,7 +38,8 @@ services:
     depends_on:
       - client
     ports:
-      - "8888:8888"
+      # note accessible from the LAN since we don't use 0.0.0.0:8888
+      - "8888:8888" 
 
 
 networks:
