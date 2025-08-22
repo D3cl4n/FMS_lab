@@ -16,6 +16,8 @@ services:
     networks:
       wepnet:
         ipv4_address: 172.20.0.3
+    depends_on:
+      - access_point
     tty: true
 
   client:
@@ -25,8 +27,19 @@ services:
       wepnet:
         ipv4_address: 172.20.0.4
     depends_on:
-      - access_point
+      - attacker
     tty: true
+
+  notebook:
+    build: ./notebook
+    container_name: fms_notebook
+    networks:
+      wepnet:
+        ipv4_address: 172.20.0.5
+    depends_on:
+      - client
+    ports:
+      - "8888":"8888"
 
 
 networks:
