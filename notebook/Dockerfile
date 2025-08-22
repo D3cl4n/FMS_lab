@@ -9,7 +9,10 @@ COPY requirements.txt /notebook
 RUN pip install -r requirements.txt
 
 # copy the notebook into the container
-COPY fms_notebook.pynb /notebook
+COPY fms_notebook.ipynb /notebook
+
+# document the port exposed on the container
+EXPOSE 8888
 
 # run Jupyter Notebook
-CMD ["jupyter notebook"]
+CMD ["jupyter", "notebook", "--ip=127.0.0.1", "--port=8888"]
