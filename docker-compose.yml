@@ -39,7 +39,7 @@ services:
     depends_on:
       - client
     ports:
-      - "8888":"8888"
+      - "8888:8888"
 
 
 networks:
