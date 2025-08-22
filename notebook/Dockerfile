@@ -2,14 +2,14 @@
 FROM jupyter/base-notebook
 
 # set the working directory in the container
-WORKDIR /notebook
+WORKDIR /home/jovyan/work
 
 # copy requirements.txt and install python modules
-COPY requirements.txt /notebook
+COPY requirements.txt /home/jovyan/work
 RUN pip install -r requirements.txt
 
 # copy the notebook into the container
-COPY fms_notebook.ipynb /notebook
+COPY fms_notebook.ipynb /home/jovyan/work
 
 # document the port exposed on the container
 EXPOSE 8888
