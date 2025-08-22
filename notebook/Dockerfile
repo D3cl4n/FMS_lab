@@ -12,6 +12,7 @@ RUN pip install -r requirements.txt
 RUN apt-get update && apt-get install net-tools -y
 
 # copy the notebook into the container
-COPY ../jupyter_books/console.pynb /notebook
+COPY fms_notebook.pynb /notebook
 
-
+# run Jupyter Notebook
+CMD ["jupyter notebook"]
