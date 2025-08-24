@@ -30,6 +30,7 @@ services:
     tty: true
 
   notebook:
+    user: root
     build: ./notebook
     container_name: fms_notebook
     networks:
@@ -40,6 +41,8 @@ services:
     ports:
       # note accessible from the LAN since we don't use 0.0.0.0:8888
       - "8888:8888" 
+    volumes: 
+      - /var/run/docker.sock:/var/run/docker.sock
 
 
 networks:
