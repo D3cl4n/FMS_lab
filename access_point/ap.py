@@ -89,12 +89,11 @@ class Server:
         server = listener.wait_for_connection()
         server.sendline(b"Welcome to the RC4 Oracle")
         # handle the user connection
-        while True:
-            # server receives first, then sends message back
-            ct = server.recvline()
-            log.info(f"Received {ct} from client")
-            server.sendline(b"test")
-            break
+        
+        # server receives first, then sends message back
+        ct = server.recvline()
+        log.info(f"Received {ct} from client")
+        server.sendline(b"test")
     
         # clean up
         server.close()

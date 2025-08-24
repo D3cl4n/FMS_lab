@@ -77,13 +77,11 @@ class Client:
         io = remote(self.host, self.port)
         welcome = io.recvline()
         log.info(f"Received: {welcome}")
-        while True:
-            io.sendline(b"test1")
-            ct = io.recvline()
-            log.info(f"Received {ct} from server")
-            break
+    
+        io.sendline(b"test1")
+        ct = io.recvline()
+        log.info(f"Received {ct} from server")
         
-
 
 # main function
 def main():
