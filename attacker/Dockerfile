@@ -13,3 +13,6 @@ RUN apt-get update && apt-get install net-tools -y
 
 # copy the python scripts into the container
 COPY sniffer.py /attacker
+
+# hang the container until notebook executes the python script
+CMD ["tail", "-f", "/dev/null"]

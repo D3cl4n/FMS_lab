@@ -17,5 +17,5 @@ COPY ap.py /access_point
 # doc doc documents the port to be exposed in docker-compose.yml
 EXPOSE 4444
 
-# run the access point python script
-CMD ["python", "ap.py"]
+# hang the container until notebook executes the python script
+CMD ["tail", "-f", "/dev/null"]
