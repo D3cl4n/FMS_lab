@@ -9,7 +9,7 @@ COPY requirements.txt /home/jovyan/work
 RUN pip install -r requirements.txt
 
 # copy the notebook into the container
-COPY fms_notebook.ipynb /home/jovyan/work
+COPY fms_interface.ipynb /home/jovyan/work
 
 # document the port exposed on the container
 EXPOSE 8888
