@@ -18,4 +18,4 @@ COPY ap.py /access_point
 EXPOSE 4444
 
 # hang the container until notebook executes the python script
-CMD ["tail", "-f", "/dev/null"]
+CMD ["python", "ap.py"]

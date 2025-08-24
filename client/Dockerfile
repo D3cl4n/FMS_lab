@@ -15,4 +15,4 @@ RUN apt-get update && apt-get install net-tools -y
 COPY client.py /client
 
 # execute the client python script
-CMD ["tail", "-f", "/dev/null"]
+CMD ["python", "client.py"]
