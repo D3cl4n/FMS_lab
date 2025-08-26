@@ -14,5 +14,5 @@ RUN apt-get update && apt-get install net-tools -y
 # copy python script into the container
 COPY client.py /client
 
-# execute the client python script
+# run the script once the notebook launches this container
 CMD ["python", "client.py"]

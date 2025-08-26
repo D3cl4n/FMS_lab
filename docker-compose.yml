@@ -36,8 +36,6 @@ services:
     networks:
       wepnet:
         ipv4_address: 172.20.0.5
-    depends_on:
-      - client
     ports:
       # note accessible from the LAN since we don't use 0.0.0.0:8888
       - "8888:8888" 
