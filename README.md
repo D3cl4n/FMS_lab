@@ -7,4 +7,4 @@
 ## Build Instructions
 
 ## Executing the lab
-TODO: figure out flow of notebook starting containers etc. and how to view stdout
+TODO: edit client.py and ap.py to give clean output to notebook, only ascii, no colors or anything for easy
