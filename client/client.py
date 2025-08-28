@@ -55,7 +55,7 @@ class RC4:
         assert len(plaintext) == len(keystream)
 
         # return the keystream for decryption
-        return keystream, [x ^ y for x, y in zip(keystream, plaintext)]
+        return keystream, bytes([x ^ y for x, y in zip(keystream, list(plaintext))])
 
     # decrypt a given ciphertext
     def decrypt(self, ciphertext, keystream):
