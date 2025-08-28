@@ -100,7 +100,7 @@ class Client:
     
         # send 10 ciphertexts and IVs to access point
         for _ in range(10):
-            ct, iv = self.random_message()
+            ct, iv = self.random_message_iv()
             io.sendline(iv + ct)
             ct = io.recvline()
             log.info(f"Received {ct} from server")
