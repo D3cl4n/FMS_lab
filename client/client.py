@@ -14,7 +14,7 @@ class RC4:
 
 
     # swap two values in the S-Box by index
-    def saw_by_index(self, S, i, j):
+    def swap_by_index(self, S, i, j):
         temp = S[i]
         S[i] = S[j]
         S[j] = temp
@@ -23,7 +23,7 @@ class RC4:
     # key scheduling algorithm - KSA
     def ksa(self, iv):
         S = self.init_s()
-        sessio_key = iv + self.key
+        session_key = iv + self.key
         j = 0
         for i in range(256):
             j = (j + S[i] + session_key[i % len(session_key)]) % 256
@@ -47,8 +47,7 @@ class RC4:
 
     # encrypt a given plaintext
     def encrypt(self, iv, plaintext):
-        iv_ints = [int(b) for b in iv]
-        S = self.ksa(iv_ints)
+        S = self.ksa(iv)
         keystream = self.prga(S, len(plaintext))
 
         # keystream generated should be the same length as the plaintext
@@ -84,12 +83,12 @@ class Client:
             m.append(random.randint(0, 255))
 
         # generate a random IV as well of form [b0, b1, b2]
-        iv = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
+        iv = bytearray([random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)])
 
         # encrypt using IV and m
         ct = self.rc4.encrypt(iv, m)
 
-        return bytearray(ct), bytearray(iv)
+        return bytearray(ct), iv
         
 
     # start the client functionality
