@@ -77,11 +77,11 @@ class Client:
     def random_message_iv(self):
         # choose a random, short, message length
         n = random.randint(5, 20)
-        m = [self.snap_hdr]
+        m = bytearray(self.snap_hdr)
 
         # generate n random bytes to encrypt
         for _ in range(n):
-            m.append(random.randint(0, 255))
+            m.append(bytes(random.randint(0, 255)))
 
         # generate a random IV as well of form [b0, b1, b2]
         iv = bytearray([random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)])
