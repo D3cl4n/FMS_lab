@@ -7,4 +7,4 @@
 ## Build Instructions
 
 ## Executing the lab
-TODO: edit client.py and ap.py to give clean output to notebook, only ascii, no colors or anything for easy
+TODO: debug bytes and ints in client.py, mirror RC4 code into ap.py as well, collect logs and analyze after the fact, dont stream stdoit
