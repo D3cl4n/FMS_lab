@@ -1,3 +1,4 @@
+import random
 from pwn import *
 
 
@@ -72,6 +73,7 @@ class Server:
         self.port = port
         self.key = key
         self.snap_hdr = b"\xAA"
+        self.rc4 = RC4(key)
 
 
     # convert key to ints
@@ -82,18 +84,38 @@ class Server:
 
         return key_temp
 
+    
+    # generate a random message and encrypt, return ct, iv
+    def random_message_iv(self):
+        # choose a random, short, message length
+        n = random.randint(5, 20)
+        m = [self.snap_hdr]
+
+        # generate n random bytes to encrypt
+        for _ in range(n):
+            m.append(random.randint(0, 255))
+
+        # generate a random IV as well of form [b0, b1, b2]
+        iv = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
+
+        # encrypt using IV and m
+        ct = self.rc4.encrypt(iv, m)
+
+        return bytearray(ct), bytearray(iv)
+
+
 
     # start the server
     def start_server(self):
         listener = listen(4444)
         server = listener.wait_for_connection()
         server.sendline(b"Welcome to the RC4 Oracle")
-        # handle the user connection
         
         # server receives first, then sends message back
-        ct = server.recvline()
-        log.info(f"Received {ct} from client")
-        server.sendline(b"test")
+        for _ in range(10):
+            ct = server.recvline()
+            log.info(f"Received {ct} from client")
+            server.sendline(b"test")
     
         # clean up
         server.close()
@@ -104,7 +126,7 @@ class Server:
 def main():
     host = "172.20.0.2"
     port = 4444
-    key = b"test"
+    key = b"test123"
     # server driver code - starting and listening
     server = Server(host, port, key)
     server.start_server()

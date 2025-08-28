@@ -1,4 +1,4 @@
-import time
+import random
 from pwn import *
 
 
@@ -70,7 +70,27 @@ class Client:
         self.port = port
         self.key = key
         self.snap_hdr = b"\xAA"
+        self.rc4 = RC4(key)
 
+
+    # generate a random message and encrypt, return ct, iv
+    def random_message_iv(self):
+        # choose a random, short, message length
+        n = random.randint(5, 20)
+        m = [self.snap_hdr]
+
+        # generate n random bytes to encrypt
+        for _ in range(n):
+            m.append(random.randint(0, 255))
+
+        # generate a random IV as well of form [b0, b1, b2]
+        iv = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
+
+        # encrypt using IV and m
+        ct = self.rc4.encrypt(iv, m)
+
+        return bytearray(ct), bytearray(iv)
+        
 
     # start the client functionality
     def start_client(self):
@@ -78,21 +98,24 @@ class Client:
         welcome = io.recvline()
         log.info(f"Received: {welcome}")
     
-        io.sendline(b"test1")
-        ct = io.recvline()
-        log.info(f"Received {ct} from server")
+        # send 10 ciphertexts and IVs to access point
+        for _ in range(10):
+            ct, iv = self.random_message()
+            io.sendline(iv + ct)
+            ct = io.recvline()
+            log.info(f"Received {ct} from server")
         
 
 # main function
 def main():
     ap_addr = "172.20.0.2" # static IP of the access point
     port = 4444
-    key = b"test"
+    key = b"test123"
     # client driver code - starting and sending data
     client = Client(ap_addr, port, key)
     client.start_client()
 
 
+
 if __name__ == '__main__':
-    time.sleep(5)
     main()
