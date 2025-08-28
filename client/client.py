@@ -40,7 +40,7 @@ class RC4:
         for _ in range(length):
             i = (i + 1) % 256
             j = (j + S[i]) % 256
-            t = S[i] + S[j] % 256
+            t = (S[i] + S[j]) % 256
             keystream.append(S[t])
 
         return keystream
