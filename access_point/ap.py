@@ -112,10 +112,11 @@ class Server:
         server.sendline(b"Welcome to the RC4 Oracle")
         
         # server receives first, then sends message back
-        for _ in range(10):
+        for _ in range(5):
             ct = server.recvline()
-            log.info(f"Received {ct} from client")
-            server.sendline(b"test")
+            #log.info(f"Received {ct} from client")
+            log.info(f"len {len(ct)}")
+            server.sendline(b"test")
     
         # clean up
         server.close()

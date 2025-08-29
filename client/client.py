@@ -76,18 +76,18 @@ class Client:
     # generate a random message and encrypt, return ct, iv
     def random_message_iv(self):
         # choose a random, short, message length
-        n = random.randint(5, 20)
+        n = 3
         m = bytearray(self.snap_hdr)
 
         # generate n random bytes to encrypt
         for _ in range(n):
-            m.append(bytes(random.randint(0, 255)))
+            m.extend(int.to_bytes(random.randint(0, 255), 1, "little"))
 
         # generate a random IV as well of form [b0, b1, b2]
         iv = bytearray([random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)])
 
         # encrypt using IV and m
-        ct = self.rc4.encrypt(iv, m)
+        keystream, ct = self.rc4.encrypt(iv, m)
 
         return bytearray(ct), iv
         
@@ -99,9 +99,11 @@ class Client:
         log.info(f"Received: {welcome}")
     
         # send 10 ciphertexts and IVs to access point
-        for _ in range(10):
+        for _ in range(5):
             ct, iv = self.random_message_iv()
-            io.sendline(iv + ct)
+            #io.sendline(iv + ct)
+            log.info(f"{len(iv)}, {len(ct)}")
+            io.sendline(b"deez")
             ct = io.recvline()
             log.info(f"Received {ct} from server")
         
