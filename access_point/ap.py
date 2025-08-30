@@ -110,7 +110,7 @@ class Server:
         
         # server receives first, then sends message back
         for _ in range(5):
-            ct, iv = random_message_iv()
+            ct, iv = self.random_message_iv()
             client_ct = server.recvline()
             log.info(f"Received {ct} from client")
             server.sendline(iv + ct)
