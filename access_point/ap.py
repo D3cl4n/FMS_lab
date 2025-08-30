@@ -85,20 +85,20 @@ class Server:
     # generate a random message and encrypt, return ct, iv
     def random_message_iv(self):
         # choose a random, short, message length
-        n = random.randint(5, 20)
-        m = [self.snap_hdr]
+        n = 3
+        m = bytearray(self.snap_hdr)
 
         # generate n random bytes to encrypt
         for _ in range(n):
-            m.append(random.randint(0, 255))
+            m.append(int.to_bytes(random.randint(0, 255), 1, "little"))
 
         # generate a random IV as well of form [b0, b1, b2]
-        iv = [random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)]
+        iv = bytearray([random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)])
 
         # encrypt using IV and m
         ct = self.rc4.encrypt(iv, m)
 
-        return bytearray(ct), bytearray(iv)
+        return bytearray(ct), iv
 
 
 
@@ -110,10 +110,10 @@ class Server:
         
         # server receives first, then sends message back
         for _ in range(5):
-            ct = server.recvline()
-            #log.info(f"Received {ct} from client")
-            log.info(f"len {len(ct)}")
-            server.sendline(b"test")
+            ct, iv = random_message_iv()
+            client_ct = server.recvline()
+            log.info(f"Received {ct} from client")
+            server.sendline(iv + ct)
     
         # clean up
         server.close()
