@@ -8,7 +8,7 @@ class RC4:
         self.key = key
 
 
-    # generate S-Box as the identity permutation
+    # gerate S-Box as the identity permutation
     def init_s(self):
         return list(range(256))
 
@@ -20,7 +20,7 @@ class RC4:
         S[j] = temp
 
 
-    # key schedling algorithm - KSA
+    # key scheduling algorithm - KSA
     def ksa(self, iv):
         S = self.init_s()
         session_key = iv + self.key
@@ -40,7 +40,7 @@ class RC4:
         for _ in range(length):
             i = (i + 1) % 256
             j = (j + S[i]) % 256
-            t = (S[i] + S[i] ) % 256
+            t = (S[i] + S[j]) % 256
             keystream.append(S[t])
 
         return keystream
@@ -48,22 +48,19 @@ class RC4:
 
     # encrypt a given plaintext
     def encrypt(self, iv, plaintext):
-        iv_ints = [int(b) for b in iv]
-        S = self.ksa(iv_ints)
+        S = self.ksa(iv)
         keystream = self.prga(S, len(plaintext))
-        
+
         # keystream generated should be the same length as the plaintext
         assert len(plaintext) == len(keystream)
 
         # return the keystream for decryption
-        return keystream, [x ^ y for x, y in zip(keystream, plaintext)]
-
+        return keystream, bytes([x ^ y for x, y in zip(keystream, list(plaintext))])
 
     # decrypt a given ciphertext
     def decrypt(self, ciphertext, keystream):
         assert len(ciphertext) == len(keystream)
         return [x ^ y for x, y in zip(keystream, ciphertext)]
-
 
 
 # RC4 server driver code
