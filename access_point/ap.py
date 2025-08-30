@@ -90,7 +90,7 @@ class Server:
 
         # generate n random bytes to encrypt
         for _ in range(n):
-            m.append(int.to_bytes(random.randint(0, 255), 1, "little"))
+            m.extend(int.to_bytes(random.randint(0, 255), 1, "little"))
 
         # generate a random IV as well of form [b0, b1, b2]
         iv = bytearray([random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)])
