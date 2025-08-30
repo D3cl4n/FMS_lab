@@ -96,7 +96,7 @@ class Server:
         iv = bytearray([random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)])
 
         # encrypt using IV and m
-        ct = self.rc4.encrypt(iv, m)
+        keystream, ct = self.rc4.encrypt(iv, m)
 
         return bytearray(ct), iv
 
