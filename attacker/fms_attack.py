@@ -73,6 +73,20 @@ class Attacker:
         self.format_key(session_key)
 
 
+# utils class for traffic proxying
+class Utils:
+    def __init__(self, proxy_host, proxy_port):
+        self.proxy_host = proxy_host
+        self.proxy_port = proxy_port
+    
+    # start the proxy socket
+    def start_proxy(self):
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.bind((self.proxy_host, self.proxy_port))
+        # we need to accept 2 connections, one from client, one from access point
+        s.listen(2)
+
+
 # main function
 def main():
     pass
