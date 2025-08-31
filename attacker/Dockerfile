@@ -12,7 +12,7 @@ RUN pip install -r requirements.txt
 RUN apt-get update && apt-get install net-tools -y
 
 # copy the python scripts into the container
-COPY sniffer.py /attacker
+COPY fms_attack.py /attacker
 
 # hang the container until notebook executes the python script
-CMD ["tail", "-f", "/dev/null"]
+CMD ["python", "fms_attack.py"]
