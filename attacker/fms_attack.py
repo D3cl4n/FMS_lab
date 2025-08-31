@@ -103,6 +103,7 @@ def main():
     # if you change the docker networking, change these values
     hosts = {"attacker" : ["172.20.0.3", 4444], "access_point" : ["172.20.0.2", 4444], "client" : ["172.20.0.4", 4444]}
     utils = Utils(hosts)
+    utils.start_proxy()
 
 
 if __name__ == '__main__':
