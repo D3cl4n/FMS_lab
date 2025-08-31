@@ -87,14 +87,18 @@ class Utils:
         print(f"[+] Thread started, handling {addr}")
         self.data = sock.recv(1024)
         print(f"[+] Received {self.data} from {addr}")
-
+        print(self.client)
+        print(self.ap)
+    
         # sending data to the access point from client
-        if addr == self.client[0]:
+        if self.client[0] in addr:
+            print("here")
             self.ap_sock.connect((self.ap[0], self.ap[1]))
             self.ap_sock.send(self.data)
 
         # sending data to the client from access point
-        elif addr == self.ap[0]:
+        print("here1")
+        elif self.ap[0] in addr:
             sock.send(self.data)
         
 
