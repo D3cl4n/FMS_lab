@@ -98,13 +98,15 @@ class Utils:
             for _ in range(5):
                 # send the first ct to the access point
                 client_ct = sock.recv(1024)
+                print(f"client ct: {client_ct}")
                 self.ap_sock.send(client_ct)
                 # receive corresponding ct from the access point
-                ap_ct = self.ap_sock.recv(1024))
+                ap_ct = self.ap_sock.recv(1024)
+                print(f"ap ct: {ap_ct}")
                 sock.send(ap_ct)
                 # add both ciphertexts to the dataset
-                self.data.extend(client_ct)
-                self.data.extend(ap_ct)
+                self.data.append(client_ct)
+                self.data.append(ap_ct)
         
 
     # start the proxy socket
@@ -118,7 +120,7 @@ class Utils:
         while True:
             accepted_sock, addr = s.accept()
             connection_thread = threading.Thread(target=self.handle_connection, args=(accepted_sock, addr)) 
-            connection_thread.start()
+            connection_thread.join()
             print(self.data)
 
 
