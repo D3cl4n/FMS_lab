@@ -81,7 +81,7 @@ class Utils:
         self.client = hosts["client"]
     
     # target function for the thread(s) that handles a connection
-    def handle_conection(self, sock, addr):
+    def handle_connection(self, sock, addr):
         print(f"[+] Thread started, handling {addr}")
 
     # start the proxy socket
