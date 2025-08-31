@@ -80,33 +80,36 @@ class Utils:
         self.ap = hosts["access_point"]
         self.client = hosts["client"]
         self.data = []
-        self.ap_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
+    # forward traffic to correct destination - log iv and ct
+    def forward(self, source, destination, direction):
+        for _ in range(5):
+            ct = source.recv(1024)
+            self.data.extend(ct)
+            destination.send(ct)
+            ct_response = destination.recv(1024)
+            self.data.extend(ct_response)
+            source.send(ct_response)
+
     # connect to the access point and receive welcome banner
     def connect_to_ap(self, client_sock):
         self.ap_sock.connect((self.ap[0], self.ap[1]))
         client_sock.send(self.ap_sock.recv(1024))
 
     # target function for the thread(s) that handles a connection
-    def handle_connection(self, sock, addr):
+    def handle_connection(self, client_sock, addr):
         print(f"[+] Thread started, handling {addr}")
     
         # sending data to the access point from client
         if self.client[0] in addr:
-            print("here")
-            self.connect_to_ap(sock)
-            for _ in range(5):
-                # send the first ct to the access point
-                client_ct = sock.recv(1024)
-                print(f"client ct: {client_ct}")
-                self.ap_sock.send(client_ct)
-                # receive corresponding ct from the access point
-                ap_ct = self.ap_sock.recv(1024)
-                print(f"ap ct: {ap_ct}")
-                sock.send(ap_ct)
-                # add both ciphertexts to the dataset
-                self.data.append(client_ct)
-                self.data.append(ap_ct)
+            ap_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            ap_sock.connect((self.ap[0], self.ap[1]))
+            # send the welcome banner
+            client_sock.send(ap_sock.recv(1024))
+
+            # threads for bidirectional forwarding
+            threading.Thread(target=self.forward, args=(client_sock, ap_sock, "to_ap")).start()
+            threading.Thread(target=self.forward, args=(ap_sock, client_sock, "to_client")).start()
         
 
     # start the proxy socket
