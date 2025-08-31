@@ -108,7 +108,7 @@ class Client:
 
 # main function
 def main():
-    ap_addr = "172.20.0.2" # static IP of the access point
+    ap_addr = "172.20.0.3" # static IP of the attacker, simulating proxy
     port = 4444
     key = b"test123"
     # client driver code - starting and sending data
