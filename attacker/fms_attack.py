@@ -79,7 +79,7 @@ class Utils:
         self.proxy = hosts["attacker"]
         self.ap = hosts["access_point"]
         self.client = hosts["client"]
-        self.data = b""
+        self.data = []
         self.ap_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
     # connect to the access point and receive welcome banner
@@ -93,18 +93,18 @@ class Utils:
     
         # sending data to the access point from client
         if self.client[0] in addr:
+            print("here")
             self.connect_to_ap(sock)
             for _ in range(5):
                 # send the first ct to the access point
-                self.ap_sock.send(sock.recv(1024))
+                client_ct = sock.recv(1024)
+                self.ap_sock.send(client_ct)
                 # receive corresponding ct from the access point
-                sock.send(self.ap_sock.recv(1024))
-
-        # sending data to the client from access point
-        elif self.ap[0] in addr:
-            for _ in range(5):
-                sock.send(self.ap_sock.recv(1024))
-                self.ap_sock.send(sock.recv(1024))
+                ap_ct = self.ap_sock.recv(1024))
+                sock.send(ap_ct)
+                # add both ciphertexts to the dataset
+                self.data.extend(client_ct)
+                self.data.extend(ap_ct)
         
 
     # start the proxy socket
@@ -119,6 +119,7 @@ class Utils:
             accepted_sock, addr = s.accept()
             connection_thread = threading.Thread(target=self.handle_connection, args=(accepted_sock, addr)) 
             connection_thread.start()
+            print(self.data)
 
 
 # main function
