@@ -94,15 +94,18 @@ class Utils:
         # sending data to the access point from client
         if self.client[0] in addr:
             self.connect_to_ap(sock)
-            # send the first ct to the access point
-            self.ap_sock.send(sock.recv(1024))
-            # receive corresponding ct from the access point
+            for _ in range(5):
+                # send the first ct to the access point
+                self.ap_sock.send(sock.recv(1024))
+                # receive corresponding ct from the access point
+                sock.send(self.ap_sock.recv(1024))
 
         # sending data to the client from access point
         elif self.ap[0] in addr:
-            sock.send(self.data)
+            for _ in range(5):
+                sock.send(self.ap_sock.recv(1024))
+                self.ap_sock.send(sock.recv(1024))
         
-
 
     # start the proxy socket
     def start_proxy(self):
@@ -116,7 +119,6 @@ class Utils:
             accepted_sock, addr = s.accept()
             connection_thread = threading.Thread(target=self.handle_connection, args=(accepted_sock, addr)) 
             connection_thread.start()
-
 
 
 # main function
