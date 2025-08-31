@@ -79,10 +79,25 @@ class Utils:
         self.proxy = hosts["attacker"]
         self.ap = hosts["access_point"]
         self.client = hosts["client"]
-    
+        self.data = b""
+        self.ap_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
     # target function for the thread(s) that handles a connection
     def handle_connection(self, sock, addr):
         print(f"[+] Thread started, handling {addr}")
+        self.data = sock.recv(1024)
+        print(f"[+] Received {self.data} from {addr}")
+
+        # sending data to the access point from client
+        if addr == self.client[0]:
+            self.ap_sock.connect((self.ap[0], self.ap[1]))
+            self.ap_sock.send(self.data)
+
+        # sending data to the client from access point
+        elif addr == self.ap[0]:
+            sock.send(self.data)
+        
+
 
     # start the proxy socket
     def start_proxy(self):
@@ -96,6 +111,7 @@ class Utils:
             accepted_sock, addr = s.accept()
             connection_thread = threading.Thread(target=self.handle_connection, args=(accepted_sock, addr)) 
             connection_thread.start()
+
 
 
 # main function
