@@ -87,7 +87,7 @@ class Utils:
     # start the proxy socket
     def start_proxy(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind((self.proxy_host, self.proxy_port))
+        s.bind((self.proxy[0], self.proxy[1]))
         # we need to accept 2 connections, one from client, one from access point
         s.listen(2)
 
