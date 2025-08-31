@@ -94,7 +94,7 @@ class Utils:
         # accept connections
         while True:
             accepted_sock, addr = s.accept()
-            connection_thread = threading.Thread(target=handle_connection, args=(accepted_sock, addr)) 
+            connection_thread = threading.Thread(target=self.handle_connection, args=(accepted_sock, addr)) 
             connection_thread.start()
 
 
