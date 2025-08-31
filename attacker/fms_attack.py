@@ -81,23 +81,24 @@ class Utils:
         self.client = hosts["client"]
         self.data = b""
         self.ap_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    
+    # connect to the access point and receive welcome banner
+    def connect_to_ap(self, client_sock):
+        self.ap_sock.connect((self.ap[0], self.ap[1]))
+        client_sock.send(self.ap_sock.recv(1024))
 
     # target function for the thread(s) that handles a connection
     def handle_connection(self, sock, addr):
         print(f"[+] Thread started, handling {addr}")
-        self.data = sock.recv(1024)
-        print(f"[+] Received {self.data} from {addr}")
-        print(self.client)
-        print(self.ap)
     
         # sending data to the access point from client
         if self.client[0] in addr:
-            print("here")
-            self.ap_sock.connect((self.ap[0], self.ap[1]))
-            self.ap_sock.send(self.data)
+            self.connect_to_ap(sock)
+            # send the first ct to the access point
+            self.ap_sock.send(sock.recv(1024))
+            # receive corresponding ct from the access point
 
         # sending data to the client from access point
-        print("here1")
         elif self.ap[0] in addr:
             sock.send(self.data)
         
