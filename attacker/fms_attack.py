@@ -108,7 +108,7 @@ class Utils:
 
     # start the proxy socket
     def start_proxy(self):
-        listener = listen(self.attacker[1])
+        listener = listen(self.proxy[1])
 
         # accept connection
         client_io = listener.wait_for_connection()
