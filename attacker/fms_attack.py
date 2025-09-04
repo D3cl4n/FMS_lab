@@ -1,4 +1,3 @@
-import socket
 from pwn import *
 
 
@@ -84,40 +83,38 @@ class Utils:
     # connect to the access point and receive welcome banner
     def connect_to_ap(self, client_sock):
         # make a socket to connect to the AP
-        ap_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        ap_sock.connect((self.ap[0], self.ap[1]))
-        client_sock.send(ap_sock.recv(1024))
+        ap_io = remote(self.ap[0], self.ap[1])
+        client_sock.send(ap_io.recvline())
 
-        return ap_sock
+        return ap_io
 
 
     # target function for the thread(s) that handles a connection
-    def handle_connection(self, client_sock, addr):
-        log.info(f"Handling connection from client: {addr}")
-        ap_sock = self.connect_to_ap(client_sock)
+    def handle_connection(self, client_io):
+        ap_io = self.connect_to_ap(client_io)
 
         # now we are ready to intercept back and forth messaging
         for _ in range(5):
-            client_msg = client_sock.recv(1024)
-            ap_sock.send(client_msg)
-            ap_msg = ap_sock.recv(1024)
-            client_sock.send(ap_msg)
+            client_msg = client_io.recvline()
+            ap_io.send(client_msg)
+            ap_msg = ap_io.recvline()
+            client_io.send(ap_msg)
             # log the data
             self.data.append(client_msg)
             self.data.append(ap_msg)
         
+        ap_io.close()
+
 
     # start the proxy socket
     def start_proxy(self):
-        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        s.bind((self.proxy[0], self.proxy[1]))
-        # we need to accept only 1 connection, from client to MITM
-        s.listen(1)
+        listener = listen(self.attacker[1])
 
         # accept connection
-        client_sock, addr = s.accept()
+        client_io = listener.wait_for_connection()
         # populate the dataset by intercepting ciphertext and IVs
-        self.handle_connection(client_sock, addr)
+        self.handle_connection(client_io)
+        client_io.close()
 
         # perform the FMS attack here once the dataset is populated
         print(self.data)
