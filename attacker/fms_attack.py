@@ -86,7 +86,7 @@ class Utils:
         # make a socket to connect to the AP
         ap_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         ap_sock.connect((self.ap[0], self.ap[1]))
-        client_sock.send(self.ap_sock.recv(1024))
+        client_sock.send(ap_sock.recv(1024))
 
         return ap_sock
 
