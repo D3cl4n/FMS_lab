@@ -83,7 +83,7 @@ class Server:
 
     
     # generate a random message and encrypt, return ct, iv
-    def random_message_iv(self):
+    def random_message_iv(self, A, X):
         # choose a random, short, message length
         n = 3
         m = bytearray(self.snap_hdr)
@@ -93,7 +93,7 @@ class Server:
             m.extend(int.to_bytes(random.randint(0, 255), 1, "little"))
 
         # generate a random IV as well of form [b0, b1, b2]
-        iv = bytearray([random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)])
+        iv = bytearray([int.to_bytes(A+3, 1, "little"), int.to_bytes(255, 1, "little"), int.to_bytes(X, 1, "little")])
 
         # encrypt using IV and m
         keystream, ct = self.rc4.encrypt(iv, m)
@@ -109,11 +109,12 @@ class Server:
         server.sendline(b"Welcome to the RC4 Oracle")
         
         # server receives first, then sends message back
-        for _ in range(5):
-            ct, iv = self.random_message_iv()
-            client_ct = server.recvline()
-            log.info(f"Received {client_ct} from client")
-            server.sendline(iv + ct)
+        for A in range(len(self.key)):
+            for X in range(256):
+                ct, iv = self.random_message_iv(A, X)
+                client_ct = server.recvline()
+                log.info(f"Received {client_ct} from client")
+                server.sendline(iv + ct)
     
         # clean up
         server.close()
