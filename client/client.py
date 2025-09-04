@@ -102,8 +102,8 @@ class Client:
         for _ in range(5):
             ct, iv = self.random_message_iv()
             io.sendline(iv + ct)
-            ct = io.recvline()
-            log.info(f"Received {ct} from server")
+            ap_ct = io.recvline()
+            log.info(f"Received {ap_ct} from server")
         
 
 # main function
