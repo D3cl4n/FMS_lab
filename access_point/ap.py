@@ -112,7 +112,7 @@ class Server:
         for _ in range(5):
             ct, iv = self.random_message_iv()
             client_ct = server.recvline()
-            log.info(f"Received {ct} from client")
+            log.info(f"Received {client_ct} from client")
             server.sendline(iv + ct)
     
         # clean up
