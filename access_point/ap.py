@@ -93,7 +93,7 @@ class Server:
             m.extend(int.to_bytes(random.randint(0, 255), 1, "little"))
 
         # generate a random IV as well of form [b0, b1, b2]
-        iv = bytearray([int.to_bytes(A+3, 1, "little"), int.to_bytes(255, 1, "little"), int.to_bytes(X, 1, "little")])
+        iv = [int.to_bytes(A+3, 1, "little"), int.to_bytes(255, 1, "little"), int.to_bytes(X, 1, "little")]
 
         # encrypt using IV and m
         keystream, ct = self.rc4.encrypt(iv, m)
