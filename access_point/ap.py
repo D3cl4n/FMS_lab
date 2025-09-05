@@ -23,10 +23,9 @@ class RC4:
     # key scheduling algorithm - KSA
     def ksa(self, iv):
         S = self.init_s()
-        session_key = iv.append(self.key)
         j = 0
         for i in range(256):
-            j = (j + S[i] + session_key[i % len(session_key)]) % 256
+            j = (j + S[i] + session_key[i % len(iv.append(self.key)])) % 256
             self.swap_by_index(S, i, j)
 
         return S
