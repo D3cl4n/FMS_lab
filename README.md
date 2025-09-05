@@ -7,4 +7,4 @@
 ## Build Instructions
 
 ## Executing the lab
-TODO: make the proxy fully bidirectional with 2 threads
+TODO: fix session key not used anymore in client and AP, proxy working
