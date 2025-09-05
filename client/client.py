@@ -25,7 +25,7 @@ class RC4:
         S = self.init_s()
         j = 0
         for i in range(256):
-            j = (j + S[i] + session_key[i % len(iv.append(self.key)])) % 256
+            j = (j + S[i] + session_key[i % len(iv.append(self.key))]) % 256
             self.swap_by_index(S, i, j)
 
         return S
