@@ -51,6 +51,9 @@ class Attacker:
             prob_table = [0] * 256 # probabaility table for every key byte recovery
             # iterate over every IV, c[0] gathered
             for row in self.data:
+                # avoid any corrupted data
+                if len(row) != 4:
+                    continue
                 # first 3 bytes of the key are the IV
                 session_key[:3] = row[:3]
                 print(f"Session key: {session_key}")
