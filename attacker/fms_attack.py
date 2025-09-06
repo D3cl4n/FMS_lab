@@ -77,7 +77,7 @@ class Utils:
         self.proxy = hosts["attacker"]
         self.ap = hosts["access_point"]
         self.client = hosts["client"]
-        self.data = []
+        self.data = [] # only need iv and ct[0] stored
     
 
     # connect to the access point and receive welcome banner
@@ -87,6 +87,15 @@ class Utils:
         client_sock.send(ap_io.recvline())
 
         return ap_io
+
+
+    # add [iv[0], iv[1], iv[2], ct[0]] to the dataset
+    def add_to_dataset(self, ct):
+        ct = ct.strip(b"\n")
+        iv = ct[:3]
+        ct_0 = ct[3:4]
+        self.data.append(iv + ct_0)
+
 
 
     # target function for the thread(s) that handles a connection
@@ -101,8 +110,8 @@ class Utils:
                 ap_msg = ap_io.recvline()
                 client_io.send(ap_msg)
                 # log the data
-                self.data.append(client_msg)
-                self.data.append(ap_msg)
+                self.add_to_dataset(client_msg)
+                self.add_to_dataset(ap_msg)
 
             # stop data collection when client and ap stop sending
             except EOFError as e:
