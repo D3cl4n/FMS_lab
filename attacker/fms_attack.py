@@ -105,7 +105,7 @@ class Utils:
                 self.data.append(ap_msg)
 
             # stop data collection when client and ap stop sending
-            except EOFError e:
+            except EOFError as e:
                 break
         
         ap_io.close()
