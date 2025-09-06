@@ -24,8 +24,9 @@ class RC4:
     def ksa(self, iv):
         S = self.init_s()
         j = 0
+        session_key = iv + self.key
         for i in range(256):
-            j = (j + S[i] + session_key[i % len(iv.append(self.key))]) % 256
+            j = (j + S[i] + session_key[i % len(self.key)]) % 256
             self.swap_by_index(S, i, j)
 
         return S
@@ -54,7 +55,8 @@ class RC4:
         assert len(plaintext) == len(keystream)
 
         # return the keystream for decryption
-        return keystream, bytes([x ^ y for x, y in zip(keystream, list(plaintext))])
+        return keystream, [x ^ y for x, y in zip(keystream, list(plaintext))]
+
 
     # decrypt a given ciphertext
     def decrypt(self, ciphertext, keystream):
@@ -69,7 +71,6 @@ class Server:
         self.port = port
         self.key = key
         self.snap_hdr = b"\xAA"
-        self.rc4 = RC4(key)
 
 
     # convert key to ints
@@ -85,19 +86,20 @@ class Server:
     def random_message_iv(self, A, X):
         # choose a random, short, message length
         n = 3
-        m = bytearray(self.snap_hdr)
+        m = [int.from_bytes(self.snap_hdr, "little")] 
 
         # generate n random bytes to encrypt
         for _ in range(n):
-            m.extend(int.to_bytes(random.randint(0, 255), 1, "little"))
+            m.append(random.randint(0, 255), 1, "little")
 
         # generate a random IV as well of form [b0, b1, b2]
-        iv = [int.to_bytes(A+3, 1, "little"), int.to_bytes(255, 1, "little"), int.to_bytes(X, 1, "little")]
+        iv = [A+3, 255, X]
 
         # encrypt using IV and m
-        keystream, ct = self.rc4.encrypt(iv, m)
+        rc4_handler = RC4(self.key_format())
+        keystream, ct = rc4_handler.encrypt(iv, m)
 
-        return bytearray(ct), iv
+        return ct, iv
 
 
 
@@ -113,7 +115,7 @@ class Server:
                 ct, iv = self.random_message_iv(A, X)
                 client_ct = server.recvline()
                 log.info(f"Received {client_ct} from client")
-                server.sendline(iv + ct)
+                server.sendline(bytearray(iv + ct))
     
         # clean up
         server.close()
