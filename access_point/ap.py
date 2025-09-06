@@ -81,7 +81,7 @@ class Server:
 
         # generate n random bytes to encrypt
         for _ in range(n):
-            m.append(random.choice([i for i in range(1, 255) if i not in [10]))
+            m.append(random.choice([i for i in range(1, 255) if i not in [10]]))
 
         # generate a random IV as well of form [b0, b1, b2]
         iv = [A+3, 255, X]
