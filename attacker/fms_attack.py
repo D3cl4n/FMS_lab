@@ -21,7 +21,7 @@ class Attacker:
         S = list(range(256)) # S-Box in identity permutation
         j = 0
         init_0 = 0
-        init_1 = 1
+        init_1 = 0
         for i in range(A + 3):
             j = (j + S[i] + session_key[i]) % 256
             self.swap_by_index(S, i, j)
@@ -43,7 +43,7 @@ class Attacker:
 
     # recover the secret key
     def recover_key(self):
-        key_len = 4
+        key_len = 3
         session_key = [0] * 3
         # iterate A to the number of bytes we need to recover
         for A in range(key_len):
