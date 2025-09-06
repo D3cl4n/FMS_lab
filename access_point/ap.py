@@ -69,17 +69,8 @@ class Server:
     def __init__(self, host, port, key):
         self.host = host
         self.port = port
-        self.key = key
+        self.key = list(key) # converts key bytes to list of ints
         self.snap_hdr = b"\xAA"
-
-
-    # convert key to ints
-    def key_format(self):
-        key_temp = []
-        for i in range(0, len(self.key), 2):
-            key_temp.append(int(self.key[i:i+2], 16))
-
-        return key_temp
 
     
     # generate a random message and encrypt, return ct, iv
@@ -96,7 +87,7 @@ class Server:
         iv = [A+3, 255, X]
 
         # encrypt using IV and m
-        rc4_handler = RC4(self.key_format())
+        rc4_handler = RC4(self.key)
         keystream, ct = rc4_handler.encrypt(iv, m)
 
         return ct, iv
@@ -126,7 +117,7 @@ class Server:
 def main():
     host = "172.20.0.3"
     port = 4444
-    key = "test123"
+    key = b"KEY123"
     # server driver code - starting and listening
     server = Server(host, port, key)
     server.start_server()

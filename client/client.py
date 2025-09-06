@@ -69,7 +69,7 @@ class Client:
     def __init__(self, host, port, key):
         self.host = host
         self.port = port
-        self.key = key
+        self.key = list(key) # converts key bytes to list of ints
         self.snap_hdr = b"\xAA"
 
 
@@ -96,7 +96,7 @@ class Client:
         iv = [A + 3, 255, X]
 
         # encrypt using IV and m
-        rc4_handler = RC4(self.key_format())
+        rc4_handler = RC4(self.key)
         keystream, ct = self.rc4.encrypt(iv, m)
 
         return ct, iv
@@ -121,7 +121,7 @@ class Client:
 def main():
     ap_addr = "172.20.0.3" # static IP of the attacker, simulating proxy
     port = 4444
-    key = "test123"
+    key = b"KEY123"
     # client driver code - starting and sending data
     client = Client(ap_addr, port, key)
     client.start_client()
