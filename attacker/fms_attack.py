@@ -95,7 +95,7 @@ class Utils:
         ct = ct.strip(b"\n")
         iv = ct[:3]
         ct_0 = ct[3:4]
-        self.data.append(iv + ct_0)
+        self.data.append(list(iv + ct_0))
 
 
 
