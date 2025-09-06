@@ -6,6 +6,7 @@ class Attacker:
     def __init__(self, data):
         # list of IVs and CT[0] values
         self.data = data 
+        self.snap_hdr = "AA"
 
 
     # swap two values by index in the state array / S-Box
