@@ -43,7 +43,7 @@ class Attacker:
 
     # recover the secret key
     def recover_key(self):
-        key_len = 3
+        key_len = 6
         session_key = [0] * 3
         # iterate A to the number of bytes we need to recover
         for A in range(key_len):
