@@ -94,14 +94,19 @@ class Utils:
         ap_io = self.connect_to_ap(client_io)
 
         # now we are ready to intercept back and forth messaging
-        for _ in range(5):
-            client_msg = client_io.recvline()
-            ap_io.send(client_msg)
-            ap_msg = ap_io.recvline()
-            client_io.send(ap_msg)
-            # log the data
-            self.data.append(client_msg)
-            self.data.append(ap_msg)
+        while True:
+            try:
+                client_msg = client_io.recvline()
+                ap_io.send(client_msg)
+                ap_msg = ap_io.recvline()
+                client_io.send(ap_msg)
+                # log the data
+                self.data.append(client_msg)
+                self.data.append(ap_msg)
+
+            # stop data collection when client and ap stop sending
+            except EOFError e:
+                break
         
         ap_io.close()
 
