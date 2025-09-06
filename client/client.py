@@ -111,6 +111,9 @@ class Client:
         # send ciphertexts and weak IVs to access point
         for A in range(len(self.key)):
             for X in range(256):
+                # skip the edge case where X = 10 causes an extra newline when sending bytes
+                if X == 10:
+                    continue
                 ct, iv = self.random_message_iv(A, X)
                 io.sendline(bytearray(iv + ct))
                 ap_ct = io.recvline()

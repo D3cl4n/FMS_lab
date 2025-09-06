@@ -47,11 +47,13 @@ class Attacker:
         session_key = [0] * 3
         # iterate A to the number of bytes we need to recover
         for A in range(key_len):
+            print(f"Iteration: {A}")
             prob_table = [0] * 256 # probabaility table for every key byte recovery
             # iterate over every IV, c[0] gathered
             for row in self.data:
                 # first 3 bytes of the key are the IV
                 session_key[:3] = row[:3]
+                print(f"Session key: {session_key}")
                 # partial execution of the KSA
                 S, j, init_0, init_1 = self.partial_ksa(session_key, A)
                 z = S[1] # should be 0   
@@ -92,7 +94,6 @@ class Utils:
 
     # add [iv[0], iv[1], iv[2], ct[0]] to the dataset
     def add_to_dataset(self, ct):
-        ct = ct.strip(b"\n")
         iv = ct[:3]
         ct_0 = ct[3:4]
         self.data.append(list(iv + ct_0))
@@ -131,9 +132,6 @@ class Utils:
         self.handle_connection(client_io)
         client_io.close()
 
-        # perform the FMS attack here once the dataset is populated
-        print(self.data)
-
 
 # main function
 def main():
@@ -142,6 +140,7 @@ def main():
     utils = Utils(hosts)
     utils.start_proxy()
     attacker = Attacker(utils.data)
+    print(attacker.data)
     attacker.recover_key()
 
 

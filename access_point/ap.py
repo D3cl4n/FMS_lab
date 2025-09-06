@@ -103,6 +103,9 @@ class Server:
         # server receives first, then sends message back
         for A in range(len(self.key)):
             for X in range(256):
+                # skip edge case where X == 10 causes an extra newline when sending bytes
+                if X == 10:
+                    continue
                 ct, iv = self.random_message_iv(A, X)
                 client_ct = server.recvline()
                 log.info(f"Received {client_ct} from client")
