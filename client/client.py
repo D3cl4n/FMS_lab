@@ -96,7 +96,7 @@ class Client:
         iv = [A + 3, 255, X]
 
         # encrypt using IV and m
-        rc4_handler = RC4(self.key_format(self.key))
+        rc4_handler = RC4(self.key_format())
         keystream, ct = self.rc4.encrypt(iv, m)
 
         return ct, iv
