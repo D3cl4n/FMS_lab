@@ -121,7 +121,7 @@ class Client:
 def main():
     ap_addr = "172.20.0.3" # static IP of the attacker, simulating proxy
     port = 4444
-    key = b"test123"
+    key = "test123"
     # client driver code - starting and sending data
     client = Client(ap_addr, port, key)
     client.start_client()

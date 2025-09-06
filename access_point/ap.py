@@ -126,7 +126,7 @@ class Server:
 def main():
     host = "172.20.0.3"
     port = 4444
-    key = b"test123"
+    key = "test123"
     # server driver code - starting and listening
     server = Server(host, port, key)
     server.start_server()
