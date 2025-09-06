@@ -115,7 +115,9 @@ class Client:
                 io.sendline(bytearray(iv + ct))
                 ap_ct = io.recvline()
                 log.info(f"Received {ap_ct} from server")
-        
+       
+        io.close()
+
 
 # main function
 def main():
