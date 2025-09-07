@@ -89,8 +89,8 @@ class Client:
         m = [int.from_bytes(self.snap_hdr, "little")]
 
         # generate n random bytes to encrypt
-        for _ in range(n):
-            m.append(random.choice([i for i in range(1, 255) if i not in [10]]))
+        #for _ in range(n):
+        #    m.append(random.choice([i for i in range(1, 255) if i not in [10]]))
 
         # generate weak IV of the form [A+3, N-1, X]
         iv = [A + 3, 255, X]

@@ -6,7 +6,7 @@ class Attacker:
     def __init__(self, data):
         # list of IVs and CT[0] values
         self.data = data 
-        self.snap_hdr = "AA"
+        self.snap_hdr = b"\xAA"
 
 
     # swap two values by index in the state array / S-Box
@@ -37,13 +37,13 @@ class Attacker:
     def format_key(self, key):
         # remove the first 3 bytes (IV)
         temp = key[3:]
-        formatted = "".join([format(key, 'x') for key in temp])
+        formatted = "".join([format(key, '02x') for key in temp])
         log.info(f"Recovered secret key {formatted}")
 
 
     # recover the secret key
     def recover_key(self):
-        key_len = 9
+        key_len = 6
         session_key = [0] * 3
         # iterate A to the number of bytes we need to recover
         for A in range(key_len):
@@ -56,7 +56,6 @@ class Attacker:
                     continue
                 # first 3 bytes of the key are the IV
                 session_key[:3] = row[:3]
-                print(f"Session key: {session_key}")
                 # partial execution of the KSA
                 S, j, init_0, init_1 = self.partial_ksa(session_key, A)
                 z = S[1] # should be 0   
@@ -65,14 +64,14 @@ class Attacker:
                     # if a swap has distrurbed S[0] or S[1], skip this IV
                     if (init_0 != S[0] or init_1 != S[1]):
                         continue
-                    ks_byte = int(row[3]) ^ int(self.snap_hdr, 16) # ct[0] ^ 0xAA
+                    ks_byte = int(row[3]) ^ int.from_bytes(self.snap_hdr, "little") # ct[0] ^ 0xAA
                     # S not completely known when server runs PRGA, bias is no swap of S[0] or S[1] in KSA
                     # ~5% chance S[0] and S[1] never get swapped, allowing inversion of PRGA
                     key_byte = (ks_byte - j - S[A+3]) % 256 # inversion of the PRGA
                     prob_table[key_byte] += 1 # each byte has a frequency counter, increment if resolved condition met
             # get the byte with the highest probability counter - after all IVs have been iterated     
             session_key.append(prob_table.index(max(prob_table)))         
-            print(session_key)
+            log.info(f"Recovered key byte: {prob_table.index(max(prob_table))}")
         # format recovered key, remove IV from beginning
         self.format_key(session_key)
 
