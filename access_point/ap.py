@@ -78,7 +78,7 @@ class Server:
     def key_format(self):
         key_temp = []
         for i in range(0, len(self.key), 2):
-            key_temp.append(int(self.key[i:i+1], 16))
+            key_temp.append(int(self.key[i:i+2], 16))
 
         self.key_ints = key_temp
 
@@ -129,7 +129,7 @@ class Server:
 def main():
     host = "172.20.0.3"
     port = 4444
-    key = b"ABC"
+    key = "ABCDE123"
     # server driver code - starting and listening
     server = Server(host, port, key)
     server.start_server()

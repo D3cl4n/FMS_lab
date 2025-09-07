@@ -78,7 +78,7 @@ class Client:
     def key_format(self):
         key_temp = []
         for i in range(0, len(self.key), 2):
-            key_temp.append(int(self.key[i:i+1], 16))
+            key_temp.append(int(self.key[i:i+2], 16))
 
         self.key_ints = key_temp
 
@@ -88,10 +88,6 @@ class Client:
         # choose a random, short, message length
         n = 3
         m = [int.from_bytes(self.snap_hdr, "little")]
-
-        # generate n random bytes to encrypt
-        #for _ in range(n):
-        #    m.append(random.choice([i for i in range(1, 255) if i not in [10]]))
 
         # generate weak IV of the form [A+3, N-1, X]
         iv = [A + 3, 255, X]
@@ -118,7 +114,6 @@ class Client:
                 ct, iv = self.random_message_iv(A, random.choice([i for i in range(256) if i not in [10]]))
                 io.send(bytes(iv + ct))
                 ap_ct = io.recv(4)
-                log.info(f"Received {ap_ct} from server")
        
         io.close()
 

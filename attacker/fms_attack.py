@@ -111,7 +111,7 @@ class Utils:
                 client_io.send(ap_msg)
                 # log the data
                 self.add_to_dataset(client_msg)
-                self.add_to_dataset(ap_msg)
+                #self.add_to_dataset(ap_msg)
 
             # stop data collection when client and ap stop sending
             except EOFError as e:
