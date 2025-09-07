@@ -106,7 +106,7 @@ class Client:
                 if X == 10:
                     continue
                 ct, iv = self.random_message_iv(A, X)
-                io.sendline(bytearray(iv + ct))
+                io.sendline(bytes(iv + ct))
                 ap_ct = io.recvline()
                 log.info(f"Received {ap_ct} from server")
        

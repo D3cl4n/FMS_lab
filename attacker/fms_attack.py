@@ -37,7 +37,7 @@ class Attacker:
     def format_key(self, key):
         # remove the first 3 bytes (IV)
         temp = key[3:]
-        formatted = "".join([format(b, 'b:02x') for b in temp])
+        formatted = "".join([chr(int.from_bytes(b, "little")) for b in temp])
         log.info(f"Recovered secret key {formatted}")
 
 
@@ -114,7 +114,7 @@ class Utils:
                 ap_msg = ap_io.recvline()
                 client_io.send(ap_msg)
                 # log the data
-                #self.add_to_dataset(client_msg)
+                self.add_to_dataset(client_msg)
                 self.add_to_dataset(ap_msg)
 
             # stop data collection when client and ap stop sending

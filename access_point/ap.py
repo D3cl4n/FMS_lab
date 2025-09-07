@@ -109,7 +109,7 @@ class Server:
                 ct, iv = self.random_message_iv(A, X)
                 client_ct = server.recvline()
                 log.info(f"Received {client_ct} from client")
-                server.sendline(bytearray(iv + ct))
+                server.sendline(bytes(iv + ct))
     
         # clean up
         server.close()
