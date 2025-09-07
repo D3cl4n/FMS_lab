@@ -43,7 +43,7 @@ class Attacker:
 
     # recover the secret key
     def recover_key(self):
-        key_len = 6
+        key_len = 9
         session_key = [0] * 3
         # iterate A to the number of bytes we need to recover
         for A in range(key_len):
@@ -72,7 +72,7 @@ class Attacker:
                     prob_table[key_byte] += 1 # each byte has a frequency counter, increment if resolved condition met
             # get the byte with the highest probability counter - after all IVs have been iterated     
             session_key.append(prob_table.index(max(prob_table)))         
-
+            print(session_key)
         # format recovered key, remove IV from beginning
         self.format_key(session_key)
 
