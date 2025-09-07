@@ -103,11 +103,9 @@ class Server:
         
         # server receives first, then sends message back
         for A in range(len(self.key)):
+            log.info(f"Iteration: {A}")
             for X in range(256):
-                # skip edge case where X == 10 causes an extra newline when sending bytes
-                if X == 10:
-                    continue
-                ct, iv = self.random_message_iv(A, X)
+                ct, iv = self.random_message_iv(A, random.choice([i for i in range(256) if i not in [10]]))
                 client_ct = server.recv(4)
                 server.send(bytes(iv + ct))
     

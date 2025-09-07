@@ -51,9 +51,6 @@ class Attacker:
             prob_table = [0] * 256 # probabaility table for every key byte recovery
             # iterate over every IV, c[0] gathered
             for row in self.data:
-                # avoid any corrupted data
-                if len(row) != 4:
-                    continue
                 # first 3 bytes of the key are the IV
                 session_key[:3] = row[:3]
                 # partial execution of the KSA
@@ -96,7 +93,6 @@ class Utils:
 
     # add [iv[0], iv[1], iv[2], ct[0]] to the dataset
     def add_to_dataset(self, ct):
-        print(len(ct))
         iv = ct[:3]
         ct_0 = ct[3]
         self.data.append([iv[0], iv[1], iv[2], ct_0])
