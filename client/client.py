@@ -73,15 +73,6 @@ class Client:
         self.snap_hdr = b"\xAA"
 
 
-    # convert key to ints
-    def key_format(self):
-        key_temp = []
-        for i in range(0, len(self.key), 2):
-            key_temp.append(int(self.key[i:i+2], 16))
-
-        return key_temp
-
-
     # generate a random message and encrypt, return ct, iv
     def random_message_iv(self, A, X):
         # choose a random, short, message length
