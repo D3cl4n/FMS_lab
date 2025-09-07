@@ -7,7 +7,8 @@ class Attacker:
         # list of IVs and CT[0] values
         self.data = data 
         self.snap_hdr = "AA"
-
+        self.data_test = []
+    
 
     # swap two values by index in the state array / S-Box
     def swap_by_index(self, S, i, j):
@@ -49,7 +50,7 @@ class Attacker:
         for A in range(key_len):
             prob_table = [0] * 256 # probabaility table for every key byte recovery
             # iterate over every IV, c[0] gathered
-            for row in self.data:
+            for row in self.data_test:
                 # first 3 bytes of the key are the IV
                 session_key[:3] = row[:3]
                 # partial execution of the KSA
