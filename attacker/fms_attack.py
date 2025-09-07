@@ -140,12 +140,6 @@ def main():
     attacker = Attacker(utils.data)
     attacker.recover_key()
 
-    # analysis on the dataset
-    report = {2: 0, 3 : 0, 4 : 0, 5 : 0, 6 : 0, 7 : 0, 8 : 0, 9 : 0}
-    for row in utils.data:
-        report[int(row[0])] += 1
-
-    log.info(f"REPORT: {report}")
 
 
 if __name__ == '__main__':
