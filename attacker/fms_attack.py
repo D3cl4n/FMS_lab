@@ -37,7 +37,7 @@ class Attacker:
     def format_key(self, key):
         # remove the first 3 bytes (IV)
         temp = key[3:]
-        formatted = "".join([chr(int.from_bytes(b, "little")) for b in temp])
+        formatted = "".join([chr(b) for b in temp])
         log.info(f"Recovered secret key {formatted}")
 
 
@@ -96,10 +96,10 @@ class Utils:
 
     # add [iv[0], iv[1], iv[2], ct[0]] to the dataset
     def add_to_dataset(self, ct):
+        print(len(ct))
         iv = ct[:3]
-        ct_0 = ct[3:4]
-        self.data.append(list(iv + ct_0))
-
+        ct_0 = ct[3]
+        self.data.append([iv[0], iv[1], iv[2], ct_0])
 
 
     # target function for the thread(s) that handles a connection
@@ -109,9 +109,9 @@ class Utils:
         # now we are ready to intercept back and forth messaging
         while True:
             try:
-                client_msg = client_io.recvline()
+                client_msg = client_io.recv(4)
                 ap_io.send(client_msg)
-                ap_msg = ap_io.recvline()
+                ap_msg = ap_io.recv(4)
                 client_io.send(ap_msg)
                 # log the data
                 self.add_to_dataset(client_msg)
@@ -142,7 +142,6 @@ def main():
     utils = Utils(hosts)
     utils.start_proxy()
     attacker = Attacker(utils.data)
-    print(attacker.data)
     attacker.recover_key()
 
 

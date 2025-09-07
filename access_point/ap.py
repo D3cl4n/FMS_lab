@@ -61,7 +61,7 @@ class RC4:
     # decrypt a given ciphertext
     def decrypt(self, ciphertext, keystream):
         assert len(ciphertext) == len(keystream)
-        return [x ^ y for x, y in zip(keystream, ciphertext)]
+        return [x ^ y for x, y in zip(keystream, list(ciphertext))]
 
 
 # RC4 server driver code
@@ -90,8 +90,9 @@ class Server:
         rc4_handler = RC4(self.key)
         keystream, ct = rc4_handler.encrypt(iv, m)
 
-        return ct, iv
+        log.info(f"CT: {ct}")
 
+        return ct, iv
 
 
     # start the server
@@ -107,9 +108,8 @@ class Server:
                 if X == 10:
                     continue
                 ct, iv = self.random_message_iv(A, X)
-                client_ct = server.recvline()
-                log.info(f"Received {client_ct} from client")
-                server.sendline(bytes(iv + ct))
+                client_ct = server.recv(4)
+                server.send(bytes(iv + ct))
     
         # clean up
         server.close()
