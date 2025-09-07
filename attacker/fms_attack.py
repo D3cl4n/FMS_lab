@@ -50,7 +50,7 @@ class Attacker:
         for A in range(key_len):
             prob_table = [0] * 256 # probabaility table for every key byte recovery
             # iterate over every IV, c[0] gathered
-            for row in self.data_test:
+            for row in self.data:
                 # first 3 bytes of the key are the IV
                 session_key[:3] = row[:3]
                 # partial execution of the KSA
