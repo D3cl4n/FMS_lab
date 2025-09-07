@@ -37,13 +37,13 @@ class Attacker:
     def format_key(self, key):
         # remove the first 3 bytes (IV)
         temp = key[3:]
-        formatted = "".join([chr(b) for b in temp])
+        formatted = "".join([format(b, "x") for b in temp])
         log.info(f"Recovered secret key {formatted}")
 
 
     # recover the secret key
     def recover_key(self):
-        key_len = 6
+        key_len = 4
         session_key = [0] * 3
         # iterate A to the number of bytes we need to recover
         for A in range(key_len):
@@ -61,7 +61,7 @@ class Attacker:
                     # if a swap has distrurbed S[0] or S[1], skip this IV
                     if (init_0 != S[0] or init_1 != S[1]):
                         continue
-                    ks_byte = int(row[3]) ^ int.from_bytes(self.snap_hdr, "little") # ct[0] ^ 0xAA
+                    ks_byte = row[3] ^ int.from_bytes(self.snap_hdr, "little") # ct[0] ^ 0xAA
                     # S not completely known when server runs PRGA, bias is no swap of S[0] or S[1] in KSA
                     # ~5% chance S[0] and S[1] never get swapped, allowing inversion of PRGA
                     key_byte = (ks_byte - j - S[A+3]) % 256 # inversion of the PRGA
@@ -141,7 +141,7 @@ def main():
     attacker.recover_key()
 
     # analysis on the dataset
-    report = {3 : 0, 4 : 0, 5 : 0, 6 : 0, 7 : 0, 8 : 0}
+    report = {2: 0, 3 : 0, 4 : 0, 5 : 0, 6 : 0, 7 : 0, 8 : 0, 9 : 0}
     for row in utils.data:
         report[int(row[0])] += 1
 

@@ -69,8 +69,18 @@ class Client:
     def __init__(self, host, port, key):
         self.host = host
         self.port = port
-        self.key = list(key) # converts key bytes to list of ints
+        self.key = key
         self.snap_hdr = b"\xAA"
+        self.key_ints = []
+
+
+    # format the key into integers
+    def key_format(self):
+        key_temp = []
+        for i in range(0, len(self.key), 2):
+            key_temp.append(int(self.key[i:i+1], 16))
+
+        self.key_ints = key_temp
 
 
     # generate a random message and encrypt, return ct, iv
@@ -87,7 +97,7 @@ class Client:
         iv = [A + 3, 255, X]
 
         # encrypt using IV and m
-        rc4_handler = RC4(self.key)
+        rc4_handler = RC4(self.key_ints)
         keystream, ct = rc4_handler.encrypt(iv, m)
 
         return ct, iv
@@ -98,9 +108,11 @@ class Client:
         io = remote(self.host, self.port)
         welcome = io.recvline()
         log.info(f"Received: {welcome}")
-    
+        # convert key to ints
+        self.key_format()
+
         # send ciphertexts and weak IVs to access point
-        for A in range(len(self.key)):
+        for A in range(len(self.key_ints)):
             log.info(f"Iteration: {A}")
             for X in range(256):
                 ct, iv = self.random_message_iv(A, random.choice([i for i in range(256) if i not in [10]]))
@@ -115,7 +127,7 @@ class Client:
 def main():
     ap_addr = "172.20.0.3" # static IP of the attacker, simulating proxy
     port = 4444
-    key = b"ABCKEY"
+    key = "ABCDE123"
     # client driver code - starting and sending data
     client = Client(ap_addr, port, key)
     client.start_client()
