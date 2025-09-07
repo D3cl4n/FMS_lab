@@ -6,7 +6,7 @@ class Attacker:
     def __init__(self, data):
         # list of IVs and CT[0] values
         self.data = data 
-        self.snap_hdr = b"\xAA"
+        self.snap_hdr = "AA"
 
 
     # swap two values by index in the state array / S-Box
@@ -47,7 +47,6 @@ class Attacker:
         session_key = [0] * 3
         # iterate A to the number of bytes we need to recover
         for A in range(key_len):
-            print(f"Iteration: {A}")
             prob_table = [0] * 256 # probabaility table for every key byte recovery
             # iterate over every IV, c[0] gathered
             for row in self.data:
@@ -61,14 +60,14 @@ class Attacker:
                     # if a swap has distrurbed S[0] or S[1], skip this IV
                     if (init_0 != S[0] or init_1 != S[1]):
                         continue
-                    ks_byte = row[3] ^ int.from_bytes(self.snap_hdr, "little") # ct[0] ^ 0xAA
+                    ks_byte = int(row[3]) ^ int(self.snap_hdr, 16) # ct[0] ^ 0xAA
                     # S not completely known when server runs PRGA, bias is no swap of S[0] or S[1] in KSA
                     # ~5% chance S[0] and S[1] never get swapped, allowing inversion of PRGA
                     key_byte = (ks_byte - j - S[A+3]) % 256 # inversion of the PRGA
                     prob_table[key_byte] += 1 # each byte has a frequency counter, increment if resolved condition met
             # get the byte with the highest probability counter - after all IVs have been iterated     
             session_key.append(prob_table.index(max(prob_table)))         
-            log.info(f"Recovered key byte: {prob_table.index(max(prob_table))}")
+
         # format recovered key, remove IV from beginning
         self.format_key(session_key)
 
