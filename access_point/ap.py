@@ -40,6 +40,7 @@ class RC4:
         for _ in range(length):
             i = (i + 1) % 256
             j = (j + S[i]) % 256
+            self.swap_by_index(S, i, j)
             t = (S[i] + S[j]) % 256
             keystream.append(S[t])
 
