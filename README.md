@@ -7,4 +7,4 @@
 ## Build Instructions
 
 ## Executing the lab
-TODO: fix session key not used anymore in client and AP, proxy working
+TODO: test offline attack in notebook for demo and finish rc4 pre-prequisites and live attack section
