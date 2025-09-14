@@ -13,6 +13,5 @@
 Follow the Jupyter Notebook in order. Run all the python cells to learn about the basic workings of RC4 and the FMS attack. For the offline attack, recovering one byte only, draw the values of all the variables on paper. Keep track of how the S-Box changes and shifts and why weak IVs allow the attack to work. Plug variables into the equations and watch the calculation work. 
 
 ## Learning References
-Aside from the papers cited in the .bib I used the below resources for inspiration and learning of the FMS attack:
+Aside from the papers cited in the .bib, the below resources for guidance and learning of the FMS attack.
 - https://youtu.be/2o3Hs-JDWLs?si=ZHojO6p9YbYVDRgm
-- https://github.com/jackieden26/FMS-Attack
