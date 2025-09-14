@@ -131,6 +131,7 @@ def main():
     host = "172.20.0.3"
     port = 4444
     key = "ABCDE123"
+    log.info(f"Using key: {key}")
     # server driver code - starting and listening
     server = Server(host, port, key)
     server.start_server()
