@@ -9,5 +9,5 @@
 2) Browse to `http://127.0.0.1:8888/tree?token=lab` to interact with the notebook
 
 
-## Executing the lab
-TODO: test offline attack in notebook for demo and finish rc4 pre-prequisites and live attack section
+## Recommended Work Flow
+Follow the Jupyter Notebook in order. Run all the python cells to learn about the basic workings of RC4 and the FMS attack. For the offline attack, recovering one byte only, draw the values of all the variables on paper. Keep track of how the S-Box changes and shifts and why weak IVs allow the attack to work. Plug variables into the equations and watch the calculation work. 
