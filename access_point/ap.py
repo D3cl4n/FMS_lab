@@ -2,6 +2,8 @@ import random
 from pwn import *
 
 
+context.log_level = "warn"
+
 # RC4 functionality
 class RC4:
     def __init__(self, key):

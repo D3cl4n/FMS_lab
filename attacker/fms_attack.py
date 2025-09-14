@@ -1,6 +1,8 @@
 from pwn import *
 
 
+context.log_level = "warn"
+
 # attacker functionality
 class Attacker:
     def __init__(self, data):
