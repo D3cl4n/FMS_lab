@@ -47,7 +47,7 @@ class Attacker:
     def recover_key(self):
         # start statistics reporting
         self.stats["total_samples"] = len(self.data)
-        log.info(f"{self.stats['total_samples'] available to analyze")
+        log.info(f"{self.stats['total_samples']} available to analyze")
         key_len = 4
         session_key = [0] * 3
         # iterate A to the number of bytes we need to recover
