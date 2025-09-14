@@ -2,8 +2,6 @@ import random
 from pwn import *
 
 
-context.log_level = "warn"
-
 # RC4 functionality
 class RC4:
     def __init__(self, key):
@@ -109,9 +107,10 @@ class Server:
 
     # start the server
     def start_server(self):
-        listener = listen(4444)
-        server = listener.wait_for_connection()
-        server.sendline(b"Welcome to the RC4 Oracle")
+        with context.quiet:
+            listener = listen(4444)
+            server = listener.wait_for_connection()
+            server.sendline(b"Welcome to the RC4 Oracle")
         # convert key to ints
         self.key_format()
 

@@ -1,8 +1,6 @@
 from pwn import *
 
 
-context.log_level = "warn"
-
 # attacker functionality
 class Attacker:
     def __init__(self, data):
@@ -124,10 +122,11 @@ class Utils:
 
     # start the proxy socket
     def start_proxy(self):
-        listener = listen(self.proxy[1])
+        with context.quiet:
+            listener = listen(self.proxy[1])
 
-        # accept connection
-        client_io = listener.wait_for_connection()
+            # accept connection
+            client_io = listener.wait_for_connection()
         # populate the dataset by intercepting ciphertext and IVs
         self.handle_connection(client_io)
         client_io.close()
